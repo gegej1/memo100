@@ -3,15 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 240, 240, 240;
+  --foreground-rgb: 75, 85, 146;
+  --background-rgb: 238, 243, 255;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
   font-family: "LXGW WenKai Screen R", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  line-height: 1.6;
   overscroll-behavior: none;
+  min-height: 100vh;
 }
 
 /* 添加卡片翻转效果 */

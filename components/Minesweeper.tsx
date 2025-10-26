@@ -356,7 +356,7 @@ export default function Minesweeper({ onGameLost, onGameWon, mineCount, gridSize
   // 获取格子显示内容
   const getCellContent = (cell: Cell) => {
     if (cell.isFlagged) {
-      return <Flag className="w-4 h-4 text-indigo-700" />
+      return <Flag className="h-4 w-4 text-[#5966ff]" />
     }
 
     if (!cell.isRevealed) {
@@ -364,79 +364,86 @@ export default function Minesweeper({ onGameLost, onGameWon, mineCount, gridSize
     }
 
     if (cell.isMine) {
-      return <Heart className="w-4 h-4 text-red-500" />
+      return <Heart className="h-4 w-4 text-[#ff7aa8]" />
     }
 
     return cell.adjacentMines === 0 ? null : cell.adjacentMines
   }
 
-  // 获取格子颜色
-  const getCellColor = (cell: Cell) => {
+  // 获取格子样式
+  const getCellAppearance = (cell: Cell) => {
     if (!cell.isRevealed) {
-      return "bg-indigo-100 hover:bg-indigo-200"
+      if (cell.isFlagged) {
+        return "bg-[#e1e5ff] border-[#c9d2ff] shadow-inner hover:bg-[#d9dfff]"
+      }
+      return "bg-[#f6f7ff] hover:bg-[#e9ecff]"
     }
 
     if (cell.isMine) {
-      return "bg-red-500"
+      return "bg-[#ffe5ef] border-[#ffd1e0]"
     }
 
-    return "bg-slate-100"
+    return "bg-white border-[#e3e6ff]"
   }
 
   // 获取数字颜色
   const getNumberColor = (num: number) => {
     const colors = [
       "", // 0 - 空白
-      "text-blue-600", // 1
-      "text-green-600", // 2
-      "text-red-600", // 3
-      "text-purple-800", // 4
-      "text-yellow-600", // 5
-      "text-teal-600", // 6
-      "text-black", // 7
-      "text-gray-600", // 8
+      "text-[#4b5cf5]", // 1
+      "text-[#2b8b7d]", // 2
+      "text-[#f56599]", // 3
+      "text-[#6b46c1]", // 4
+      "text-[#c05621]", // 5
+      "text-[#2a8ca4]", // 6
+      "text-[#2f3657]", // 7
+      "text-[#6b6f96]", // 8
     ]
 
     return colors[num] || ""
   }
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <div className="text-lg font-bold flex items-center text-indigo-700">
-          <Heart className="w-5 h-5 mr-2" />
-          剩余小事: {flagsLeft}
+    <div className="w-full rounded-[36px] border border-white/70 bg-white/95 p-6 shadow-[0_35px_80px_rgba(120,136,255,0.25)] backdrop-blur-sm sm:p-10">
+      <div className="flex flex-col gap-4 text-[#4a4fd3] sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <div className="flex items-center text-xl font-semibold text-[#4d55d9]">
+            <Heart className="mr-2 h-5 w-5 text-[#6f77ff]" />
+            剩余小事: <span className="ml-1 font-bold">{flagsLeft}</span>
+          </div>
+          <p className="text-sm text-[#8a90c3]">记得插旗标记所有的小事，全部点亮即可解锁内容</p>
         </div>
         <button
           onClick={initializeGrid}
-          className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition-colors duration-150"
+          className="inline-flex items-center justify-center rounded-2xl bg-[#6a6fff] px-6 py-2.5 text-base font-semibold text-white shadow-[0_18px_30px_rgba(98,103,255,0.35)] transition hover:bg-[#5b61f5]"
         >
           <RefreshCw className="mr-2 h-4 w-4" />
           重新开始
         </button>
       </div>
 
-      {/* 修复布局问题，确保是正方形 */}
-      <div className="relative w-full pb-[100%]">
-        <div
-          className="absolute top-0 left-0 w-full h-full grid gap-0.5 bg-indigo-200 p-1 rounded-md shadow-inner select-none"
-          style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, gridTemplateRows: `repeat(${rows}, 1fr)` }}
-        >
-          {grid.map((row, rowIndex) =>
-            row.map((cell, colIndex) => (
-              <button
-                key={`${rowIndex}-${colIndex}`}
-                className={`w-full h-full flex items-center justify-center font-bold ${getCellColor(cell)} ${
-                  typeof getCellContent(cell) === "number" ? getNumberColor(getCellContent(cell) as number) : ""
-                } transition-colors duration-200`}
-                onClick={() => revealCell(rowIndex, colIndex)}
-                onContextMenu={(e) => toggleFlag(rowIndex, colIndex, e)}
-                disabled={gameOver}
-              >
-                {getCellContent(cell)}
-              </button>
-            )),
-          )}
+      <div className="mx-auto mt-8 w-full max-w-[920px] rounded-[32px] border border-[#e4e8ff] bg-gradient-to-b from-[#f4f6ff] to-[#e0e6ff] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
+        <div className="rounded-[26px] border border-[#cfd4ff] bg-[#dfe4ff] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
+          <div
+            className="grid aspect-square w-full gap-[2.5px] rounded-[20px] bg-[#aebdff]/70 p-3 select-none"
+            style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, gridTemplateRows: `repeat(${rows}, 1fr)` }}
+          >
+            {grid.map((row, rowIndex) =>
+              row.map((cell, colIndex) => (
+                <button
+                  key={`${rowIndex}-${colIndex}`}
+                  className={`flex items-center justify-center rounded-[6px] border border-white/70 text-sm font-semibold text-[#3b436f] transition-all duration-150 ${getCellAppearance(cell)} ${
+                    typeof getCellContent(cell) === "number" ? getNumberColor(getCellContent(cell) as number) : ""
+                  }`}
+                  onClick={() => revealCell(rowIndex, colIndex)}
+                  onContextMenu={(e) => toggleFlag(rowIndex, colIndex, e)}
+                  disabled={gameOver}
+                >
+                  {getCellContent(cell)}
+                </button>
+              )),
+            )}
+          </div>
         </div>
       </div>
     </div>

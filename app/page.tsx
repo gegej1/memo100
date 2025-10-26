@@ -84,64 +84,71 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-slate-100 font-sans text-gray-700">
-      <header className="my-8 text-center">
-        <h1 className="text-4xl font-bold text-indigo-600">我们的100件小事</h1>
-        <p className="text-lg text-indigo-500 mt-2">来扫雷吧！成功以后即可解锁😉</p>
-      </header>
+    <main className="relative min-h-screen overflow-hidden bg-[#eef3ff] px-4 py-12 text-[#4b5592] sm:py-16">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-x-1/2 top-[-120px] h-[360px] w-[720px] -translate-x-1/2 rounded-[320px] bg-gradient-to-b from-white via-white/70 to-transparent blur-3xl" />
+        <div className="absolute left-[-80px] top-32 h-64 w-64 rounded-full bg-[#d9e4ff] blur-[120px]" />
+        <div className="absolute right-[-40px] bottom-10 h-72 w-72 rounded-full bg-[#d0e8ff] blur-[150px]" />
+      </div>
+      <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center gap-10">
+        <header className="text-center">
+          <h1 className="text-4xl font-extrabold tracking-tight text-[#4f55ff] sm:text-[48px]">我们的100件小事</h1>
+          <p className="mt-3 text-lg font-medium text-[#7c84bd]">来扫雷吧！成功以后即可解锁😉</p>
+        </header>
 
-      <div className="w-full max-w-2xl bg-white p-6 rounded-xl shadow-xl">
-        {gameState === "playing" && (
-          <>
-            <Minesweeper
-              onGameLost={handleGameLost}
-              onGameWon={handleGameWon}
-              mineCount={mineCount}
-              gridSize={20} // 保持网格大小为20x20
-              savedProgress={gameProgress} // 传递保存的游戏进度
-            />
-            <GameRules />
-            {/* 隐藏的一键通关按钮 */}
-            <div className="mt-4 flex justify-center">
+        <div className="w-full space-y-8">
+          {gameState === "playing" && (
+            <>
+              <Minesweeper
+                onGameLost={handleGameLost}
+                onGameWon={handleGameWon}
+                mineCount={mineCount}
+                gridSize={20}
+                savedProgress={gameProgress}
+              />
+              <GameRules />
+              {/* 隐藏的一键通关按钮 */}
+              <div className="sr-only">
+                <button onClick={() => window.dispatchEvent(new CustomEvent("secretWin"))}>一键通关</button>
+              </div>
+            </>
+          )}
+
+          {gameState === "revival" && (
+            <div className="rounded-[32px] border border-white/70 bg-white/95 p-6 shadow-[0_35px_60px_rgba(120,136,255,0.2)]">
+              <VideoRevival
+                onRevival={handleRevival}
+                onRestart={handleRestart}
+                playedVideoIndexes={playedVideoIndexes}
+                onVideoPlayed={handleVideoPlayed}
+              />
+            </div>
+          )}
+
+          {gameState === "lost" && (
+            <div className="rounded-[32px] border border-white/70 bg-white/95 p-8 text-center shadow-[0_35px_80px_rgba(255,128,160,0.25)]">
+              <h2 className="text-2xl font-bold text-[#ff6b81]">游戏结束</h2>
+              <p className="mb-6 mt-3 text-[#7a7ea8]">很遗憾，你踩到了地雷！再来一次吧～</p>
               <button
-                onClick={() => window.dispatchEvent(new CustomEvent("secretWin"))}
-                className="opacity-0 absolute w-4 h-4 cursor-default"
-                aria-hidden="true"
+                onClick={handleRestart}
+                className="rounded-2xl bg-[#5c6bff] px-6 py-3 font-semibold text-white shadow-[0_12px_30px_rgba(92,107,255,0.35)] transition hover:bg-[#505ceb]"
               >
-                一键通关
+                重新开始
               </button>
             </div>
-          </>
-        )}
+          )}
 
-        {gameState === "revival" && (
-          <VideoRevival
-            onRevival={handleRevival}
-            onRestart={handleRestart}
-            playedVideoIndexes={playedVideoIndexes}
-            onVideoPlayed={handleVideoPlayed}
-          />
-        )}
+          {gameState === "flashcards" && (
+            <div className="rounded-[32px] border border-white/70 bg-white/95 p-6 shadow-[0_35px_60px_rgba(120,136,255,0.2)]">
+              <FlashCards minePositions={minePositions} />
+            </div>
+          )}
+        </div>
 
-        {gameState === "lost" && (
-          <div className="text-center p-6 bg-white rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold text-red-600 mb-4">游戏结束</h2>
-            <p className="mb-4">很遗憾，你踩到了地雷！</p>
-            <button
-              onClick={handleRestart}
-              className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition"
-            >
-              重新开始
-            </button>
-          </div>
-        )}
-
-        {gameState === "flashcards" && <FlashCards minePositions={minePositions} />}
+        <footer className="pb-6 text-center text-sm font-semibold text-[#7580b3]">
+          <p>为小花特别制作 · © {new Date().getFullYear()}</p>
+        </footer>
       </div>
-
-      <footer className="mt-8 text-center text-sm text-slate-500">
-        <p>为小花特别制作 &copy; {new Date().getFullYear()}</p>
-      </footer>
     </main>
   )
 }
